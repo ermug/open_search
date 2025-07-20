@@ -1,4 +1,4 @@
-module open_search
+module open-search-engine-project
 
 go 1.24
 

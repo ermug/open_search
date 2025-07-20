@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crawler
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: crawler
+  template:
+    metadata:
+      labels:
+        app: crawler
+    spec:
+      containers:
+      - name: crawler
+        image: gcr.io/open-search-engine-project/crawler:latest
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: crawl-output
+          mountPath: /app/crawl_output
+      volumes:
+      - name: crawl-output
+        persistentVolumeClaim:
+          claimName: crawl-output-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: crawl-output-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard-rwo 

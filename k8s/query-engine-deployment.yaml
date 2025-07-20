@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: query-engine
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: query-engine
+  template:
+    metadata:
+      labels:
+        app: query-engine
+    spec:
+      containers:
+      - name: query-engine
+        image: gcr.io/open-search-engine-project/query-engine:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: index-output
+          mountPath: /app/index_output
+          readOnly: true
+      volumes:
+      - name: index-output
+        persistentVolumeClaim:
+          claimName: index-output-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: query-engine
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: query-engine 

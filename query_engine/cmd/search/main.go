@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"open_search/query_engine"
+	"open-search-engine-project/query_engine"
 )
 
 func main() {

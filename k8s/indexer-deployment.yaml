@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: indexer
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: indexer
+  template:
+    metadata:
+      labels:
+        app: indexer
+    spec:
+      containers:
+      - name: indexer
+        image: gcr.io/open-search-engine-project/indexer:latest
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        volumeMounts:
+        - name: crawl-output
+          mountPath: /app/crawl_output
+          readOnly: true
+        - name: index-output
+          mountPath: /app/index_output
+      volumes:
+      - name: crawl-output
+        persistentVolumeClaim:
+          claimName: crawl-output-pvc
+      - name: index-output
+        persistentVolumeClaim:
+          claimName: index-output-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: index-output-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: standard-rwo 
