@@ -1,6 +1,7 @@
 # Open Search Engine
 
 A distributed web search engine built with Go, featuring a crawler, indexer, and query engine deployed on Kubernetes.
+
 Note: I have disabled the cloud deployment due to monetary constraints
 
 ## Overview
